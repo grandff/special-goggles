@@ -6,19 +6,16 @@ const Navigation = ({userObj}) => {
         <nav>
             <ul>
                 <li>
-                    <Link to ="/"></Link>
+                    <Link to ="/">Dashboard</Link>
+                </li>                
+                <li>
+                    <Link to ="/board">board</Link>
                 </li>
                 <li>
-                    <Link to = "/profile"></Link>
+                    <Link to ="/calendar">calendar</Link>
                 </li>
                 <li>
-                    <Link to ="/board"></Link>
-                </li>
-                <li>
-                    <Link to ="/calendar"></Link>
-                </li>
-                <li>
-                    <Link to ="/bot"></Link>
+                    <Link to ="/bot">Bot</Link>
                 </li>
             </ul>
         </nav>
