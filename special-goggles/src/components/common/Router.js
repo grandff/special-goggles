@@ -1,4 +1,7 @@
 import Auth from "components/Auth/Auth";
+import Board from "components/board/Board";
+import BoardForm from "components/board/BoardForm";
+import Chatbot from "components/chat/Chatbot";
 import React from "react";
 import {HashRouter as Router, Route, Switch} from "react-router-dom";
 import Home from "routes/Home";
@@ -22,7 +25,16 @@ const AppRouter = ({isLoggedIn, userObj}) => {
                         </Route>
                         <Route exact path = "/settings">
 
-                            
+
+                        </Route>
+                        <Route exact path = "/board">
+                            <Board userObj={userObj} />
+                        </Route>
+                        <Route exact path = "/boardInsert">
+                            <BoardForm userObj={userObj} />
+                        </Route>
+                        <Route exact path = "/bot">
+                            <Chatbot userObj={userObj} />
                         </Route>
                     </div>
                 ):(
