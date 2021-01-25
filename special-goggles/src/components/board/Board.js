@@ -10,6 +10,7 @@ const Board = ({userObj}) => {
     useEffect(() => {
         dbService.collection("board1").onSnapshot(snapshot => {
             const board1Array = snapshot.docs.map((doc) => ({id : doc.id, ...doc.data()}));
+            console.log(board1Array);
             setBoard1s(board1Array);
         });
     }, []);
@@ -18,11 +19,11 @@ const Board = ({userObj}) => {
         <div>
             <h1>Board</h1>
             <div>
-                {board1s.length === 0 ? "등록된 글이 없습니다." : (
-                    board1s.map((board) => {
+                {board1s.length === 0 ? "등록된 글이 없습니다." : 
+                    board1s.map((board) => (
                         <BoardList key = {board.id} boardObj = {board} isOwner = {board.REG_ID === userObj.uid} />
-                    })
-                )}                
+                    ))
+                }  
             </div>
             <div>
                 <button><Link to="/boardInsert">등록</Link></button>

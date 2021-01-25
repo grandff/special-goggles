@@ -4,8 +4,10 @@ import {dbService, storageService} from "fbase";
 import { Editor } from "react-draft-wysiwyg";
 import { EditorState, convertToRaw } from 'draft-js';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { Link, Route, useHistory } from "react-router-dom";
 
 const BoardForm = ({userObj}) => {
+    const history = useHistory();
     const [ttl, setTtl] = useState("");
     const [ctt, setCtt] = useState(EditorState.createEmpty());
     const [attachment, setAttachment] = useState("");
@@ -22,16 +24,20 @@ const BoardForm = ({userObj}) => {
         }
         
         event.preventDefault();
+        const current = new Date();
         const boardObj = {
             TTL : ttl,
             CTT : draftToHtml(convertToRaw(ctt.getCurrentContent())),
-            REG_DATE : Date.now(),
+            REG_DATE : current.toLocaleString(),
             REG_ID : userObj.uid
         }
 
         // db insert
         await dbService.collection("board1").add(boardObj);
         clearState();
+
+        alert("정상적으로 등록됐습니다.");
+        history.push("/board");        
     }
 
     const onChange = (event) => {                       // 제목
