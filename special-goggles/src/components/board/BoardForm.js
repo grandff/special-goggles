@@ -1,22 +1,51 @@
 import React, { useEffect, useState } from "react";
+import draftToHtml from 'draftjs-to-html';
 import {dbService, storageService} from "fbase";
 import { Editor } from "react-draft-wysiwyg";
+import { EditorState, convertToRaw } from 'draft-js';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 const BoardForm = ({userObj}) => {
-    const [board, setBoard] = useState("");
+    const [ttl, setTtl] = useState("");
+    const [ctt, setCtt] = useState(EditorState.createEmpty());
     const [attachment, setAttachment] = useState("");
 
-    useEffect(() => {
+    const onSubmit = async (event) => {
+        if(ttl === "") {
+            alert("제목을 입력해주세요.");
+            return;
+        }
 
-    }, [])
+        if(ctt === ""){
+            alert("내용을 입력해주세요.");
+            return;
+        }
+        
+        event.preventDefault();
+        const boardObj = {
+            TTL : ttl,
+            CTT : draftToHtml(convertToRaw(ctt.getCurrentContent())),
+            REG_DATE : Date.now(),
+            REG_ID : userObj.uid
+        }
 
-    const onSubmit = () => {
-
+        // db insert
+        await dbService.collection("board1").add(boardObj);
+        clearState();
     }
 
-    const onChange = () => {
+    const onChange = (event) => {                       // 제목
+        const {target : {name, value}} = event;
+        if (name === "ttl") setTtl(value);        
+    }
 
+    const onEditorChange = (ctt) => {                   // 에디터 내용                          
+        setCtt(ctt);
+    }
+
+    const clearState = () => {
+        setTtl("");
+        setCtt("");
     }
 
     return(
@@ -24,20 +53,23 @@ const BoardForm = ({userObj}) => {
             <h1>Board Form</h1>
             <form onSubmit={onSubmit}>
                 <div>
-                    <input type="text" />
+                    <input type="text" name="ttl" value={ttl} onChange={onChange} placeholder="제목을 입력해주세요." />
                     <Editor
-                    editorState={board}
+                    editorState={ctt}
                     toolbarClassName="toolbarClassName"
                     wrapperClassName="wrapperClassName"
                     editorClassName="editorClassName"
-                    onEditorStateChange={onChange}
-                    />;
+                    onEditorStateChange={onEditorChange}
+                    placeholder="내용을 작성해주세요."
+                    localization={{locale : 'ko'}}                    
+                    />
                 </div>
                 <div>
-
+                    <input type="file" />
                 </div>
                 <div>
-
+                    <input type="submit" value="제출" />
+                    <button>취소</button>
                 </div>
             </form>
         </>
