@@ -9,7 +9,7 @@ const Board = ({userObj}) => {
 
     useEffect(() => {
         dbService.collection("board1").onSnapshot(snapshot => {
-            const board1Array = snapshot.docs.map((doc) => ({id : doc.id, ...doc.data()}));
+            const board1Array = snapshot.docs.map((doc) => ({id : doc.id, ...doc.data()}));            
             console.log(board1Array);
             setBoard1s(board1Array);
         });
