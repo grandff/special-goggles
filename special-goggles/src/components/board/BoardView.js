@@ -1,18 +1,14 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 
-const BoardView = ({userObj}) => {
-    const {params} = this.props.match;
-    const temp1 = this.props.location.state.bid;
-    console.log("hi");
-    console.log(params);
-    console.log(temp1);
+const BoardView = () => {
+    
+    const {id} = useParams();
+
     return(
         <>
-            <div>
-                <h1>hi mother fucker</h1>
-                <h1>{params}</h1>
-                <h1>{temp1}</h1>
-            </div>
+            <h1>hi mother fucker</h1>
+            <h5>{id}</h5>          
         </>
     );
 }

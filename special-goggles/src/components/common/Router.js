@@ -15,6 +15,7 @@ const AppRouter = ({isLoggedIn, userObj}) => {
             {isLoggedIn && <StatusBar userObj = {userObj} /> }    
             {isLoggedIn && <Navigation userObj = {userObj} /> }                
             <Switch>
+                <>
                 {isLoggedIn ? (
                     <div>
                         <Route exact path = "/">
@@ -32,9 +33,9 @@ const AppRouter = ({isLoggedIn, userObj}) => {
                         <Route exact path = "/boardInsert">
                             <BoardForm userObj={userObj} />
                         </Route>
-                        <Route exact path = "/boardView">
-                            <BoardView userObj={userObj} />
-                        </Route>
+                        <Route exact path = "/boardView/:id" >
+                            <BoardView />
+                        </Route>          
                         <Route exact path = "/bot">
                             <Chatbot userObj={userObj} />
                         </Route>
@@ -44,6 +45,7 @@ const AppRouter = ({isLoggedIn, userObj}) => {
                         <Auth />
                     </Route>
                 )}
+                </>
             </Switch>   
         </Router>
     );
