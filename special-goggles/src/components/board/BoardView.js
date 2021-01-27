@@ -1,20 +1,31 @@
+import React, { useEffect, useState } from "react";
 import { dbService } from "fbase";
-import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 const BoardView = () => {    
     const {id} = useParams();
-    let boardObject;
+    const [board, setBoard] = useState("");    
     
     useEffect(() => {
-        boardObject = dbService.collection("board1").doc({id});
+        getBoard();
     }, []);
+
+    const getBoard = async () => {        
+        const getId = `${id}`;
+        const boardObj = await dbService.collection("board1").doc(getId).get()
+        const boardVal = boardObj.data();        
+        setBoard(boardVal);
+    }
+
+    
 
     return(
         <>
             <h1>hi mother fucker</h1>
             <h5>{id}</h5>      
-            <h6>{boardObject.TTL}</h6>    
+            <h6>제목 : {board.TTL}</h6>
+            <h6>내용 : {board.CTT}</h6>
+            <h6>등록일 : {board.REG_DATE}</h6>
         </>
     );
 }
