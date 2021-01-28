@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import {v4 as uuid4} from "uuid";
 import draftToHtml from 'draftjs-to-html';
 import {dbService, storageService} from "fbase";
 import { Editor } from "react-draft-wysiwyg";
@@ -7,6 +8,11 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { Link, Route, useHistory } from "react-router-dom";
 
 const BoardForm = ({userObj}) => {
+    /*
+        에디터 모드를 
+        에디터 , 그냥 일반 텍스트필드
+        두개로 나눠서 작업하기..    
+    */
     const history = useHistory();
     const [ttl, setTtl] = useState("");
     const [ctt, setCtt] = useState(EditorState.createEmpty());
@@ -24,12 +30,20 @@ const BoardForm = ({userObj}) => {
         }
         
         event.preventDefault();
+        let attachmentUrl = "";
+        if(attachment !== ""){
+            const attachmentRef = storageService.ref().child(`${userObj.uid}/${uuid4()}`);
+            const response = await attachmentRef.putString(attachment, "data_url");
+            attachmentUrl = await response.ref.getDownloadURL();
+        }
+
         const current = new Date();
         const boardObj = {
             TTL : ttl,
             CTT : draftToHtml(convertToRaw(ctt.getCurrentContent())),
             REG_DATE : current.toLocaleString(),
-            REG_ID : userObj.uid
+            REG_ID : userObj.uid,
+            attachmentUrl
         }
 
         // db insert
@@ -52,7 +66,23 @@ const BoardForm = ({userObj}) => {
     const clearState = () => {
         setTtl("");
         setCtt("");
+        setAttachment("");
     }
+
+    // image file input
+    const onFileChange = (event) => {
+        const {target : {files}} = event;
+        const theFile = files[0];
+        const reader = new FileReader();
+        reader.onloadend = (finishedEvent) => {
+            const {currentTarget : {result}} = finishedEvent
+            setAttachment(result);
+        }
+        reader.readAsDataURL(theFile);
+    }
+
+    // clear image file
+    const onClearAttachment = () => setAttachment("");
 
     return(
         <>
@@ -71,7 +101,13 @@ const BoardForm = ({userObj}) => {
                     />
                 </div>
                 <div>
-                    <input type="file" />
+                    <input type="file" accept="image/*" onChange={onFileChange} />
+                    {attachment && (
+                        <div>
+                            <img src={attachment} alt="attach_img" />
+                            <button onClick={onClearAttachment}>Remove</button>
+                        </div>
+                    )}
                 </div>
                 <div>
                     <input type="submit" value="제출" />
