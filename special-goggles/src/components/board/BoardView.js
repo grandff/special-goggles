@@ -7,6 +7,7 @@ import draftToHtml from "draftjs-to-html";
 
 
 const BoardView = () => {    
+    const [editing, setEditing] = useState(false);
     const {id} = useParams();
     const [board, setBoard] = useState("");    
     
