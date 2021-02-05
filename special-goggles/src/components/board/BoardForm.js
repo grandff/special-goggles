@@ -89,6 +89,10 @@ const BoardForm = ({userObj}) => {
             <h1>Board Form</h1>
             <form onSubmit={onSubmit}>
                 <div>
+                    <label><input type="radio" name="mode" value="1"/>에디터</label>
+                    <label><input type="radio" name="mode" value="2"/>텍스트</label>
+                </div>
+                <div>
                     <input type="text" name="ttl" value={ttl} onChange={onChange} placeholder="제목을 입력해주세요." />
                     <Editor
                     editorState={ctt}
