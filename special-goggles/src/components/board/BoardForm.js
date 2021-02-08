@@ -8,15 +8,16 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { Link, Route, useHistory } from "react-router-dom";
 
 const BoardForm = ({userObj}) => {
-    /*
-        에디터 모드를 
-        에디터 , 그냥 일반 텍스트필드
-        두개로 나눠서 작업하기..    
-    */
     const history = useHistory();
     const [ttl, setTtl] = useState("");
     const [ctt, setCtt] = useState(EditorState.createEmpty());
     const [attachment, setAttachment] = useState("");
+    const [radioVal, setRadioVal] = useState("");
+
+    useEffect(() => {
+        setRadioVal("1");
+        editorChangeMode("1");
+    }, []);
 
     const onSubmit = async (event) => {
         if(ttl === "") {
@@ -57,6 +58,10 @@ const BoardForm = ({userObj}) => {
     const onChange = (event) => {                       // 제목
         const {target : {name, value}} = event;
         if (name === "ttl") setTtl(value);        
+        else if(name === "mode"){
+            setRadioVal(value);
+            editorChangeMode(value);
+        } 
     }
 
     const onEditorChange = (ctt) => {                   // 에디터 내용                          
@@ -84,15 +89,25 @@ const BoardForm = ({userObj}) => {
     // clear image file
     const onClearAttachment = () => setAttachment("");
 
+    const editorChangeMode = (val) => {        
+         const editorCtt = document.querySelector("#editor-ctt");
+         const textCtt = document.querySelector("#text-ctt");
+
+         if(editorCtt !== "undefined" && textCtt !== "undefined"){
+             editorCtt.style.display = (val === '1' ? "" : "none");
+             textCtt.style.display = (val === '2' ? "" : "none");        
+         }
+    }
+
     return(
         <>
             <h1>Board Form</h1>
             <form onSubmit={onSubmit}>
                 <div>
-                    <label><input type="radio" name="mode" value="1"/>에디터</label>
-                    <label><input type="radio" name="mode" value="2"/>텍스트</label>
+                    <label><input type="radio" name="mode" value="1" onChange={onChange} checked={radioVal === "1" ? true : false} />에디터</label>
+                    <label><input type="radio" name="mode" value="2" onChange={onChange} checked={radioVal === "2" ? true : false}/>텍스트</label>
                 </div>
-                <div>
+                <div id="editor-ctt">
                     <input type="text" name="ttl" value={ttl} onChange={onChange} placeholder="제목을 입력해주세요." />
                     <Editor
                     editorState={ctt}
@@ -103,6 +118,9 @@ const BoardForm = ({userObj}) => {
                     placeholder="내용을 작성해주세요."
                     localization={{locale : 'ko'}}                    
                     />
+                </div>
+                <div id="text-ctt">
+                    <textarea name="ctt" value={ctt} onChange={onEditorChange}></textarea>
                 </div>
                 <div>
                     <input type="file" accept="image/*" onChange={onFileChange} />
