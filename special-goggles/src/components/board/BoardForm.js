@@ -11,6 +11,7 @@ const BoardForm = ({userObj}) => {
     const history = useHistory();
     const [ttl, setTtl] = useState("");
     const [ctt, setCtt] = useState(EditorState.createEmpty());
+    const [textCtt, setTextCtt] = useState("");
     const [attachment, setAttachment] = useState("");
     const [radioVal, setRadioVal] = useState("");
 
@@ -41,7 +42,7 @@ const BoardForm = ({userObj}) => {
         const current = new Date();
         const boardObj = {
             TTL : ttl,
-            CTT : draftToHtml(convertToRaw(ctt.getCurrentContent())),
+            CTT : (radioVal === "1" ? draftToHtml(convertToRaw(ctt.getCurrentContent())) : textCtt) ,
             REG_DATE : current.toLocaleString(),
             REG_ID : userObj.uid,
             attachmentUrl
@@ -61,7 +62,8 @@ const BoardForm = ({userObj}) => {
         else if(name === "mode"){
             setRadioVal(value);
             editorChangeMode(value);
-        } 
+        }
+        else if(name === "textCtt")  setTextCtt(value);         // textarea
     }
 
     const onEditorChange = (ctt) => {                   // 에디터 내용                          
@@ -107,8 +109,10 @@ const BoardForm = ({userObj}) => {
                     <label><input type="radio" name="mode" value="1" onChange={onChange} checked={radioVal === "1" ? true : false} />에디터</label>
                     <label><input type="radio" name="mode" value="2" onChange={onChange} checked={radioVal === "2" ? true : false}/>텍스트</label>
                 </div>
-                <div id="editor-ctt">
+                <div>
                     <input type="text" name="ttl" value={ttl} onChange={onChange} placeholder="제목을 입력해주세요." />
+                </div>
+                <div id="editor-ctt">                    
                     <Editor
                     editorState={ctt}
                     toolbarClassName="toolbarClassName"
@@ -120,7 +124,7 @@ const BoardForm = ({userObj}) => {
                     />
                 </div>
                 <div id="text-ctt">
-                    <textarea name="ctt" value={ctt} onChange={onEditorChange}></textarea>
+                    <textarea name="textCtt" value={textCtt} onChange={onChange}></textarea>
                 </div>
                 <div>
                     <input type="file" accept="image/*" onChange={onFileChange} />
