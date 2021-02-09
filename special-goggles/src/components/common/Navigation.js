@@ -17,6 +17,9 @@ const Navigation = ({userObj}) => {
                 <li>
                     <Link to ="/bot">Bot</Link>
                 </li>
+                <li>
+                    <Link to ="/smile">Smile</Link>
+                </li>
             </ul>
         </nav>
     );

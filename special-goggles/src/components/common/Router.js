@@ -3,6 +3,7 @@ import Board from "components/board/Board";
 import BoardForm from "components/board/BoardForm";
 import BoardView from "components/board/BoardView";
 import Chatbot from "components/chat/Chatbot";
+import Smile from "components/smile/Smile";
 import React from "react";
 import {HashRouter as Router, Route, Switch} from "react-router-dom";
 import Home from "routes/Home";
@@ -38,6 +39,9 @@ const AppRouter = ({isLoggedIn, userObj}) => {
                         </Route>          
                         <Route exact path = "/bot">
                             <Chatbot userObj={userObj} />
+                        </Route>
+                        <Route exact path = "/smile">
+                            <Smile userObj={userObj} />
                         </Route>
                     </div>
                 ):(
